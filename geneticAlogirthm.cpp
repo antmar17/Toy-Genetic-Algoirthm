@@ -48,7 +48,7 @@ bool comparator( pair<vector<double>,double> p1,pair<vector<double>,double> p2){
 
 template <typename T> T geneticAlg(std::function<T(vector<double>)>incubator, std::function<double(T)>costFunction,int maxGenes,int maxGenrations){ 
   //function ptr for sorting of map
-
+cout<<"Been called"<<endl;
 
   //maps animal genes ->cost 
   std::vector< pair<vector<double>,double>> generation;
@@ -61,9 +61,10 @@ template <typename T> T geneticAlg(std::function<T(vector<double>)>incubator, st
 
   //have to seed in time to ACTUALLY make it random
   srand(time(0));
-
+   cout<<"initial generation: [";
   //make inital generation
-  for(int i=0;i<maxGenrations;i++){
+  
+  for(int i=0;i<10;i++){
 
     //genes of animal
     vector<double> genes=makeGenes(maxGenes);
@@ -75,13 +76,13 @@ template <typename T> T geneticAlg(std::function<T(vector<double>)>incubator, st
     pair<vector<double>,double> p;
     p.first=genes;
     p.second=cost;
-
+    cout<< p.second <<",";
     generation.push_back(p);
 
 
   }
+  cout<<"]"<<endl;
 
-    cout<< "Cost: "<<bestCost<<endl;
   //sort the generation
   sort(generation.begin(),generation.end(),comparator);
 
@@ -89,54 +90,71 @@ template <typename T> T geneticAlg(std::function<T(vector<double>)>incubator, st
   bestGenes=generation[0].first;
   bestCost=generation[0].second;
 
-  while(bestCost < 0.01 && genCount < maxGenrations){
-
+    cout<< "initial Cost: "<<bestCost<<endl;
+  while(bestCost > 0.01 && genCount < maxGenrations){
     //get two best 
     while(generation.size() > 2){
       generation.pop_back();
       
     }
 
+
     
-    //fill generation back up with mutated copies of best animal
+    //fill generation back up with mutate copies of best animal
     for(int i=2;i<10;i++){
       vector<double> genes;
       //create copy
-      for(int e = 0;e<maxGenes;e++){
-        genes[e]=bestGenes[e];
+      for(int e = 0;e<maxGenes - 1;e++){
+        double copy=bestGenes[e];
+        cout<<copy<<endl;
+
+        genes.push_back(copy);
       }
 
       //mutate the copy
 
 
-      
+
       //ratio of how many genes to replace in each animal-
       int amountToReplace=floor( (maxGenes*(1/4)));
-      
+
       //generate random index and random numbers
       for (int e=0;e < amountToReplace;e++){
-       
+
         double value=randomDouble();
         int index= rand() % maxGenes;
 
         genes[index]=value;
       }
-      
-     pair<vector<double>,double> mutatedPair;
+
+      pair<vector<double>,double> mutatedPair;
       mutatedPair.first=genes;
       mutatedPair.second=bestCost;
 
       generation.push_back(mutatedPair);
-      
-      }
+
+
+
     }
+    //sort the generation
+    sort(generation.begin(),generation.end(),comparator);
+
+    //keep track of best genes
+    bestGenes=generation[0].first;
+    bestCost=generation[0].second;
+    genCount++;
+    cout << bestCost<<endl;
+
+
+  }
+  cout <<"final cost: "<< bestCost<<endl;
   return incubator(bestGenes);
 
 }
 
 double sampleCostFunc(pair<double,double> head){
 
-  return sqrt(pow( (2 - head.first) , 2) + pow((2 - head.second),2));
+  return sqrt( (pow( (2 - head.first) , 2)) + (pow((2 - head.second),2)) );
 
 }
 
@@ -148,9 +166,10 @@ pair<double,double> sampleIncubator(vector<double> input){
   return ret;
 }
 int main(){
-  
- pair<double,double> x= geneticAlg<pair<double,double>>(sampleIncubator, sampleCostFunc, 2, 1000);
 
+  pair<double,double> x= geneticAlg<pair<double,double>>(sampleIncubator, sampleCostFunc, 2, 1000);
+
+  cout << "("<<x.first<<","<< x.second <<")"<< endl;
 
 
 
