@@ -9,6 +9,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <math.h>
 using namespace std;
 
 //produce a number between -100 and 100 aka a gene
@@ -21,13 +22,12 @@ double randomDouble(){
 }
 vector<double> makeGenes(int maxGenes){
   vector<double> animal;
-  cout<<"[";
   for(int i=0;i<maxGenes;i++){
+
     double random=randomDouble();
     animal.push_back(random);
-    cout<<random<<",";
+
   }
-  cout<<"]"<<endl;
 
   //cast to pointer to double
   return animal;
@@ -37,99 +37,119 @@ vector<double> makeGenes(int maxGenes){
 }
 
 
-template<typename T>bool comparator( pair<T,double> p1,pair<T,double> p2){
+bool comparator( pair<vector<double>,double> p1,pair<vector<double>,double> p2){
   return p1.second < p2.second;
 }
-
-bool x( pair<char,double> p1,pair<char,double> p2){
-  return p1.second < p2.second;
-}
-
-
-
-
-
 //the geneticAlgorithm will take two functions in which we will define depending on what we want to use the algorithm for :
 //The incubator: takes a double* and returns a Generic Type
 //The costFunction:take a GenericType and convert it to a double to represent it's cost(how wrong it is)
 
-int operation2(int x, int y,std::function<int(int, int)> function){return function(x,y);}
 
 
-template <typename T> T geneticAlg(std::function<T(vector<double>)>incubator, std::function<double(T)>costFunction,int maxGenes,int maxGnerations){ 
+template <typename T> T geneticAlg(std::function<T(vector<double>)>incubator, std::function<double(T)>costFunction,int maxGenes,int maxGenrations){ 
   //function ptr for sorting of map
-  
 
-  //maps animal->cost 
-  std::vector<pair<T,double>> generation;
+
+  //maps animal genes ->cost 
+  std::vector< pair<vector<double>,double>> generation;
+
   int genCount=0;
   
-  T bestAnimal;
+  vector<double> bestGenes;
   double bestCost;
-  
+
 
   //have to seed in time to ACTUALLY make it random
   srand(time(0));
 
   //make inital generation
-  for(int i=0;i<10;i++){
-    cout<<"animal: "<<i<<endl;
-    
+  for(int i=0;i<maxGenrations;i++){
+
     //genes of animal
     vector<double> genes=makeGenes(maxGenes);
-    
-    
+
     T animal=incubator(genes);
     double cost=costFunction(animal);
-     
-    //get animal and cost 
-    pair<T,double> p;
-    p.first=animal;
+
+    //get animal genes and cost 
+    pair<vector<double>,double> p;
+    p.first=genes;
     p.second=cost;
 
     generation.push_back(p);
 
+
   }
 
+    cout<< "Cost: "<<bestCost<<endl;
   //sort the generation
   sort(generation.begin(),generation.end(),comparator);
-  
-  
-  bestAnimal=generation.begin().first;
-  bestCost=generation.begin().second;
 
-while(bestCost < 0.01 && genCount < 1000){
+  //keep track of best genes
+  bestGenes=generation[0].first;
+  bestCost=generation[0].second;
 
-//TODO: set up mutation and logic to make more generations!
+  while(bestCost < 0.01 && genCount < maxGenrations){
 
+    //get two best 
+    while(generation.size() > 2){
+      generation.pop_back();
+      
+    }
+
+    
+    //fill generation back up with mutated copies of best animal
+    for(int i=2;i<10;i++){
+      vector<double> genes;
+      //create copy
+      for(int e = 0;e<maxGenes;e++){
+        genes[e]=bestGenes[e];
+      }
+
+      //mutate the copy
+
+
+      
+      //ratio of how many genes to replace in each animal-
+      int amountToReplace=floor( (maxGenes*(1/4)));
+      
+      //generate random index and random numbers
+      for (int e=0;e < amountToReplace;e++){
+       
+        double value=randomDouble();
+        int index= rand() % maxGenes;
+
+        genes[index]=value;
+      }
+      
+     pair<vector<double>,double> mutatedPair;
+      mutatedPair.first=genes;
+      mutatedPair.second=bestCost;
+
+      generation.push_back(mutatedPair);
+      
+      }
+    }
+  return incubator(bestGenes);
+
+}
+
+double sampleCostFunc(pair<double,double> head){
+
+  return sqrt(pow( (2 - head.first) , 2) + pow((2 - head.second),2));
 
 }
 
 
-
-  return incubator(generation.begin()->second);
-
+pair<double,double> sampleIncubator(vector<double> input){
+  pair<double,double> ret;
+  ret.first=input[0];
+  ret.second=input[1];
+  return ret;
 }
-
-
 int main(){
   
-   vector<pair<char,double>> pV;
-   pair<char,double> one;
-  one.first='b';
-  one.second=10.0;
-
-  pair<char,double> two;
-  two.first='a';
-  two.second=20.0;
-
-
-   pV.push_back(one);
-   pV.push_back(two);
-
-
-   std :: sort(pV.begin(),pV.end(),x);
-
+ pair<double,double> x= geneticAlg<pair<double,double>>(sampleIncubator, sampleCostFunc, 2, 1000);
 
 
 
