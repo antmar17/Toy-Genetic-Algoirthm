@@ -19,6 +19,7 @@ double randomDouble(){
   //have to seed in time to ACTUALLY make it random
   double f=(rand()/(double)RAND_MAX);
 
+         
   return f * 200 - 100;
 
 }
@@ -114,7 +115,7 @@ template <typename T> T geneticAlg(std::function<T(vector<double>)>incubator, st
   srand(time(0));
   //make inital generation
   
-  for(int i=0;i<10;i++){
+  for(int i=0;i<50;i++){
 
     //genes of animal
     vector<double> genes=makeGenes(maxGenes);
@@ -138,7 +139,6 @@ template <typename T> T geneticAlg(std::function<T(vector<double>)>incubator, st
   bestGenes=generation[0].first;
   bestCost=generation[0].second;
 
-  cout<<"inital generation"<<endl;
   print_generation(generation);
 
   while(bestCost > 0.01 && genCount < maxGenrations){
@@ -149,7 +149,7 @@ template <typename T> T geneticAlg(std::function<T(vector<double>)>incubator, st
 
     }
     //fill generation back up with mutate copies of best animal
-    for(int i=2;i<10;i++){
+    for(int i=2;i<50;i++){
       vector<double> genes=mutateGene(&bestGenes);
 
 
@@ -164,7 +164,6 @@ template <typename T> T geneticAlg(std::function<T(vector<double>)>incubator, st
     }
     //sort the generation
     sort(generation.begin(),generation.end(),comparator);
-    cout<<"mutated generation"<<endl;
 
     print_generation(generation);
 
@@ -210,20 +209,4 @@ int main(){
   print_vector(z);
   return 0;
 }
-
-
-
-//template<typename name>ret_type func_name(paramaters){
-
-
-
-
-//function body...
-//}
-
-
-
-
-
-
 

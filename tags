@@ -1,0 +1,16 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+comparator	geneticAlgorithm.cpp	/^bool comparator( pair<vector<double>,double> p1,pair<vector<double>,double> p2){$/;"	f
+geneticAlg	geneticAlgorithm.cpp	/^template <typename T> T geneticAlg(std::function<T(vector<double>)>incubator, std::function<double(T)>costFunction,int maxGenes,int maxGenrations){ $/;"	f
+main	geneticAlgorithm.cpp	/^int main(){$/;"	f
+makeGenes	geneticAlgorithm.cpp	/^vector<double> makeGenes(int maxGenes){$/;"	f
+mutateGene	geneticAlgorithm.cpp	/^vector<double> mutateGene(vector<double>* gene){$/;"	f
+print_generation	geneticAlgorithm.cpp	/^void print_generation(vector<pair<vector <double>,double>>  a) {$/;"	f
+print_vector	geneticAlgorithm.cpp	/^void print_vector(vector <double>  a) {$/;"	f
+randomDouble	geneticAlgorithm.cpp	/^double randomDouble(){$/;"	f
+sampleCostFunc	geneticAlgorithm.cpp	/^double sampleCostFunc(vector<double> head){$/;"	f
+sampleIncubator	geneticAlgorithm.cpp	/^vector<double> sampleIncubator(vector<double> input){$/;"	f
